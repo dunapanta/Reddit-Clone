@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import cookie from 'cookie'
 
 import { User } from "../entities/User";
+import auth from '../middleware/auth'
 
 const register = async (req: Request, res: Response) => {
     const { email, username, password } = req.body
@@ -81,15 +82,36 @@ const login = async (req: Request, res: Response) => {
             path: '/',
         }))
 
-        return res.json({user, token})
+        return res.json(user)
 
     }catch(err){
 
     }
 }
 
+// when the user send request to this route, return if is authenticated and who this user is
+const me = (req: Request, res: Response) => {
+    return res.json(res.locals.user)
+}
+
+// set the cookie with the same name but expires to 0 so the browser delete the cookie
+const logout = (req: Request, res: Response) => {
+
+    res.set('Set-Cookie', cookie.serialize('token', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        expires: new Date(0),
+        path: '/',
+    }))
+
+    return res.status(200).json({ success: true})
+}
+
 const router = Router()
 router.post('/register', register)
 router.post('/login', login)
+router.get('/me', auth, me)
+router.get('/logout', auth, logout)
 
 export default router
