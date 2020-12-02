@@ -1,6 +1,8 @@
 import { Request, Response, Router } from "express";
 import { isEmpty, validate } from 'class-validator'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import cookie from 'cookie'
 
 import { User } from "../entities/User";
 
@@ -64,7 +66,22 @@ const login = async (req: Request, res: Response) => {
             return res.status(401).json({ password: 'Contraseña incorrecta' })
         }
 
-        return res.json(user)
+        const token = jwt.sign({ username }, 'ksdfn9908093aodosdkndsklsl')
+        // set the cookie, the client takes the value of this header and stored on the machine as a cookie
+        // httpOnly the cookie can not be access by javascript
+        // secure the cookie should only be trasnsfer throug https
+        // sameSite this cookie should only came from our domain
+        // maxAge time of expiration
+        // path where the cookie is valid
+        res.set('Set-Cookie', cookie.serialize('token', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+            maxAge: 3600,
+            path: '/',
+        }))
+
+        return res.json({user, token})
 
     }catch(err){
 
