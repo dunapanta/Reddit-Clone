@@ -66,7 +66,7 @@ const login = async (req: Request, res: Response) => {
             return res.status(401).json({ password: 'Contraseña incorrecta' })
         }
 
-        const token = jwt.sign({ username }, 'ksdfn9908093aodosdkndsklsl')
+        const token = jwt.sign({ username }, process.env.JWT_SECRET)
         // set the cookie, the client takes the value of this header and stored on the machine as a cookie
         // httpOnly the cookie can not be access by javascript
         // secure the cookie should only be trasnsfer throug https
@@ -75,7 +75,7 @@ const login = async (req: Request, res: Response) => {
         // path where the cookie is valid
         res.set('Set-Cookie', cookie.serialize('token', token, {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
             maxAge: 3600,
             path: '/',
