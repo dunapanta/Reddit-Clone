@@ -5,29 +5,14 @@ import { Exclude } from 'class-transformer'
 
 import Entity from './Entity'
 
-@TOEntity("users")
-export default class User extends Entity{
+@TOEntity("posts")
+export default class Post extends Entity{
 
     // Partial means some of the fields can be nulable
-    constructor(user: Partial<User>){
+    constructor(post: Partial<Post>){
         super()
-        Object.assign(this, user)
+        Object.assign(this, post)
     }
-
-    @Index()
-    @IsEmail()
-    @Column({ unique: true })
-    email: string
-
-    @Index()
-    @Length(3, 50, { message: "Username must be at least 3 characters long"})
-    @Column({ unique: true })
-    username: string
-
-    @Exclude()
-    @Column()
-    @Length(6, 50)
-    password: string
 
     @BeforeInsert()
     async hashPassword(){
