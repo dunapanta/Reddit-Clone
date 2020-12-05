@@ -1,9 +1,7 @@
-import { IsEmail, Length } from "class-validator";
-import {Entity as TOEntity, Column, Index, BeforeInsert} from "typeorm";
-import bcrypt from 'bcrypt'
-import { Exclude } from 'class-transformer'
+/* import {Entity as TOEntity, Column, Index, ManyToOne, JoinColumn} from "typeorm";
 
 import Entity from './Entity'
+import User from "./User";
 
 @TOEntity("posts")
 export default class Post extends Entity{
@@ -13,10 +11,28 @@ export default class Post extends Entity{
         super()
         Object.assign(this, post)
     }
-
-    @BeforeInsert()
-    async hashPassword(){
-        this.password = await bcrypt.hash(this.password, 6)
-    }
     
+    @Index()
+    @Column()
+    idetifier: string //7 caracthers
+
+    @Column()
+    title: string
+
+    // name of the post in the url
+    @Index()
+    @Column()
+    slug: string
+
+    @Column({ nullable: true, type: 'text'})
+    body: string
+
+    // nabe of the sub that this post belongs to
+    @Column()
+    subName: string
+
+    @ManyToOne( () => User, user => user.posts)
+    @JoinColumn({ name: 'username', referencedColumnName: 'username' })
+    user: User
 }
+ */
