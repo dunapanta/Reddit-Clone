@@ -1,6 +1,4 @@
-import { text } from "express";
-import {Entity as TOEntity, Column, Index, ManyToOne, JoinColumn, BeforeInsert, OneToMany} from "typeorm";
-import { makeId, slugify } from "../util/helpers";
+import {Entity as TOEntity, Column, Index, ManyToOne, JoinColumn, OneToMany} from "typeorm";
 
 import Entity from './Entity'
 import User from "./User";

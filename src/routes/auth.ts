@@ -67,7 +67,7 @@ const login = async (req: Request, res: Response) => {
             return res.status(401).json({ password: 'Contraseña incorrecta' })
         }
 
-        const token = jwt.sign({ username }, process.env.JWT_SECRET)
+        const token = jwt.sign({ username }, process.env.JWT_SECRET!)
         // set the cookie, the client takes the value of this header and stored on the machine as a cookie
         // httpOnly the cookie can not be access by javascript
         // secure the cookie should only be trasnsfer throug https
@@ -85,17 +85,18 @@ const login = async (req: Request, res: Response) => {
         return res.json(user)
 
     }catch(err){
-
+        console.log(err)
+        return res.json({ error: "Algo ha ido mal"})
     }
 }
 
 // when the user send request to this route, return if is authenticated and who this user is
-const me = (req: Request, res: Response) => {
+const me = (_: Request, res: Response) => {
     return res.json(res.locals.user)
 }
 
 // set the cookie with the same name but expires to 0 so the browser delete the cookie
-const logout = (req: Request, res: Response) => {
+const logout = (_: Request, res: Response) => {
 
     res.set('Set-Cookie', cookie.serialize('token', '', {
         httpOnly: true,
