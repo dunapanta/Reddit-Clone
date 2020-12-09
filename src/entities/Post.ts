@@ -16,7 +16,7 @@ export default class Post extends Entity{
     
     @Index()
     @Column()
-    idetifier: string //7 caracthers
+    identifier: string //7 caracthers
 
     @Column()
     title: string
@@ -43,7 +43,7 @@ export default class Post extends Entity{
 
     @BeforeInsert()
     makeIdAndSlug(){
-        this.idetifier = makeId(7)
+        this.identifier = makeId(7)
         this.slug = slugify(this.title)
     }
 }

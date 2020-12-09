@@ -1,0 +1,5 @@
+// Solucionar problema con migraciones
+
+npm run typeorm schema:drop
+npm run typeorm migration:generate -- --name users-posts-tables 
+npm run typeorm migration:run
