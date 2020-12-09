@@ -1,5 +1,10 @@
-// Solucionar problema con migraciones
-
+// Eliminar Esquema
 npm run typeorm schema:drop
+
+// Generar Migracion
 npm run typeorm migration:generate -- --name users-posts-tables 
 npm run typeorm migration:run
+
+//Revertir Ultima Migracion
+npm run typeorm migration:revert
+y eliminar manualmente
