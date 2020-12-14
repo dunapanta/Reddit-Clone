@@ -1,7 +1,35 @@
+import { FormEvent, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+import Axios from 'axios'
 
 export default function Register() {
+
+  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [agreement, setAgreement] = useState(false)
+  const [errors, setErrors] = useState<any>({})
+
+  const submitForm = async (event: FormEvent) => {
+      event.preventDefault()
+
+      try{
+        const res =  await Axios.post('/auth/register', {
+          email, 
+          username, 
+          password
+      })
+
+      console.log(res.data)
+
+      }catch(err){
+        console.log(err)
+        setErrors(err.response.data)
+      }
+  
+  }
+
   return (
     <div className="flex">
       <Head>
@@ -20,12 +48,14 @@ export default function Register() {
           <p className="mb-10 text-xs">
             Al continuar, acepta nuestro Acuerdo de Usuario y Politica de Privacidad
           </p>
-          <form>
+          <form onSubmit={submitForm}>
             <div className="mb-6">
               <input 
                 type="checkbox" 
                 className="mr-1 cursor-pointer" 
                 id="agreement" 
+                checked={agreement}
+                onChange={e => setAgreement(e.target.checked)}
               />
               <label 
                 htmlFor="agreement"
@@ -38,6 +68,8 @@ export default function Register() {
                 type="email"
                 className="w-full p-3 transition duration-200 border border-gray-400 rounded outline-none bg-gray-50 focus:bg-white hover:bog-white"
                 placeholder="Correo"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
               />
             </div>
             <div className="mb-2">
@@ -45,6 +77,8 @@ export default function Register() {
                 type="username"
                 className="w-full p-3 transition duration-200 border border-gray-400 rounded outline-none bg-gray-50 focus:bg-white hover:bog-white"
                 placeholder="Usuario"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
               />
             </div>
             <div className="mb-2">
@@ -52,6 +86,8 @@ export default function Register() {
                 type="password"
                 className="w-full p-3 transition duration-200 border border-gray-400 rounded outline-none bg-gray-50 focus:bg-white hover:bog-white"
                 placeholder="Contraseña"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
               />
             </div>
             <button
