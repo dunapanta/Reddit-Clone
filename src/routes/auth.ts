@@ -29,7 +29,15 @@ const register = async (req: Request, res: Response) => {
 
         errors = await validate(user)
         if(errors.length > 0){
-            return res.status(400).json({ errors })
+            let mappedErrors: any = {}
+            errors.forEach((e : any) => {
+                const key = e.property
+                //object turn into an array --entries
+                const value = Object.entries(e.constraints)[0][1]
+                mappedErrors[key] = value
+            })
+            console.log(mappedErrors)
+            return res.status(400).json(mappedErrors)
         }
 
         await user.save()
