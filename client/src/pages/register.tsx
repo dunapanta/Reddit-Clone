@@ -2,6 +2,9 @@ import { FormEvent, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Axios from 'axios'
+import { useRouter } from 'next/router'
+
+import InputGroup from '../components/InputGroup'
 
 export default function Register() {
 
@@ -11,17 +14,23 @@ export default function Register() {
   const [agreement, setAgreement] = useState(false)
   const [errors, setErrors] = useState<any>({})
 
+  const router = useRouter()
+
   const submitForm = async (event: FormEvent) => {
       event.preventDefault()
 
+      /* if(!agreement){
+        setErrors({...errors, agreememt: "Acepte lo terminos y condiciones"})
+        return
+      } */
       try{
-        const res =  await Axios.post('/auth/register', {
-          email, 
-          username, 
-          password
-      })
+         await Axios.post('/auth/register', {
+            email, 
+            username, 
+            password
+        })
 
-      console.log(res.data)
+      router.push('/login')
 
       }catch(err){
         console.log(err)
@@ -63,33 +72,15 @@ export default function Register() {
                 >Acepto recibir correos sobre cosas interesantes de Reddit-Clone
               </label>
             </div>
-            <div className="mb-2">
-              <input 
-                type="email"
-                className="w-full p-3 transition duration-200 border border-gray-400 rounded outline-none bg-gray-50 focus:bg-white hover:bog-white"
-                placeholder="Correo"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="mb-2">
-              <input 
-                type="username"
-                className="w-full p-3 transition duration-200 border border-gray-400 rounded outline-none bg-gray-50 focus:bg-white hover:bog-white"
-                placeholder="Usuario"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-              />
-            </div>
-            <div className="mb-2">
-              <input 
-                type="password"
-                className="w-full p-3 transition duration-200 border border-gray-400 rounded outline-none bg-gray-50 focus:bg-white hover:bog-white"
-                placeholder="Contraseña"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
-            </div>
+            <InputGroup className="mb-2" type="email" value={email} setValue={setEmail}
+                        placeholder="Correo" error={errors.email}
+            />
+            <InputGroup className="mb-2" type="text" value={username} setValue={setUsername}
+                        placeholder="Usuario" error={errors.username}
+            />
+            <InputGroup className="mb-4" type="password" value={password} setValue={setPassword}
+                        placeholder="Contraseña" error={errors.password}
+            />
             <button
               className="w-full py-2 mb-4 text-xs font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded"
             >

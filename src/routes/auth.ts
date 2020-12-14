@@ -24,8 +24,8 @@ const register = async (req: Request, res: Response) => {
         const emailUser = await User.findOne({ email })
         const usernameUser = await User.findOne({ username })
 
-        if(emailUser) errors.email = "Email is already taken"
-        if(usernameUser) errors.username = "Username is already taken"
+        if(emailUser) errors.email = "Este email ya esta registrado"
+        if(usernameUser) errors.username = "Este nombre de usuario ya esta registrado"
 
         if(Object.keys(errors).length > 0){
             return res.status(400).json(errors)
