@@ -21,7 +21,7 @@ export default function Register() {
          await Axios.post('/auth/login', {
             username, 
             password
-        }, { withCredentials: true }) //para cookies
+        }/* , { withCredentials: true } */) //para cookies, pero mejor lo incluyo en _app.tsx globalmente
 
       router.push('/')
 
