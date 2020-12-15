@@ -1,16 +1,15 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 
 import RedditLogo from '../images/reddit.svg'
 
 export default function Home() {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Reddit Clone</title>
       </Head>
-        <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-center h-12 bg-white">
+        <div className="fixed inset-x-0 top-0 z-10 flex items-center justify-center h-12 px-5 bg-white">
           {/* Logo and title */}
           <div className="flex items-center">
             <Link href="/">
@@ -28,9 +27,22 @@ export default function Home() {
             <input 
               type="text"
               className="py-1 pr-3 bg-transparent rounded w-160 focus:outline-none"
+              placeholder="Buscar"
             />
           </div>
           {/* Auth Buttons */}
+          <div className="flex">
+            <Link href="/login">
+              <a className="w-32 py-1 mr-4 leading-5 hollow blue button">
+                Iniciar Sesión
+              </a>
+            </Link>
+            <Link href="/register">
+              <a className="w-32 py-1 leading-5 blue button">
+                Registrarse
+              </a>
+            </Link>
+          </div>
         </div>
     </div>
   )
