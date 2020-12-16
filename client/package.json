@@ -11,6 +11,7 @@
     "@svgr/webpack": "^5.5.0",
     "autoprefixer": "^10.1.0",
     "axios": "^0.21.0",
+    "dayjs": "^1.9.7",
     "next": "10.0.3",
     "postcss": "^8.2.1",
     "react": "17.0.1",
