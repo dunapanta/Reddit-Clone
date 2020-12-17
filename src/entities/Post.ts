@@ -1,4 +1,4 @@
-import {Entity as TOEntity, Column, Index, ManyToOne, JoinColumn, BeforeInsert, OneToMany} from "typeorm";
+import {Entity as TOEntity, Column, Index, ManyToOne, JoinColumn, BeforeInsert, OneToMany, AfterLoad} from "typeorm";
 import { makeId, slugify } from "../util/helpers";
 
 import Entity from './Entity'
@@ -33,6 +33,19 @@ export default class Post extends Entity{
     // nabe of the sub that this post belongs to
     @Column()
     subName: string
+
+    // no se lo incluye por defecto en la respuesta por eso lo pongo explicitamente
+    @Column()
+    username: string
+
+    // para enviar la url de post
+    // se le conoce como vitual field le pongo protected para que no pueda ser modificado fuera de la instancia
+    protected url: string
+    @AfterLoad()
+    createFiels(){
+        this.url = `/r/${this.subName}/${this.identifier}/${this.slug}`
+    }
+
 
     // primer argunmento mlo que va a retornar, el segundo para hacer fetch
     @ManyToOne( () => User, user => user.posts)
