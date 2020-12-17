@@ -52,17 +52,44 @@ export default function Home() {
                   <p className="text-xs text-gray-500">
                     <span className="mx-1">•</span> 
                     Posteado por
-                    <Link href={`/u/user`}>
+                    <Link href={`/u/${post.username}`}>
                       <a className="mx-1 hover:underline">
-                        /u/user
+                        /u/{post.username}
                       </a>
                     </Link>
-                    <Link href={`/r/${post.subName}/${post.identifier}/${post.slug}`}>
+                   {/*  <Link href={`/r/${post.subName}/${post.identifier}/${post.slug}`}> */}
+                   <Link href={post.url}>
                       <a className="mx-1 hover:underline">
                         {dayjs(post.createdAt).locale("es").fromNow()}
                       </a>
                     </Link>
                   </p>
+                </div>
+                <Link href={post.url}>
+                  <a className="my-1 text-lg font-medium">
+                    {post.title}
+                  </a>
+                </Link>
+                {post.body && <p className="my-1 text-sm">{post.body}</p>}
+                
+                {/* Buttons */}
+                <div className="flex">
+                  <Link href={post.url}>
+                    <a >
+                      <div className="px-1 py-1 mr-1 text-xs text-gray-400 rounded cursor-pointer hover:bg-gray-200">
+                        <i className="mr-1 fas fa-comment-alt fa-xs"></i>
+                        <span className="font-bold">Comentarios</span>
+                      </div>
+                    </a>
+                  </Link>
+                    <div className="px-1 py-1 mr-1 text-xs text-gray-400 rounded cursor-pointer hover:bg-gray-200">
+                      <i className="mr-1 fas fa-share fa-xs"></i>
+                      <span className="font-bold">Compartir</span>
+                    </div>
+                    <div className="px-1 py-1 mr-1 text-xs text-gray-400 rounded cursor-pointer hover:bg-gray-200">
+                      <i className="mr-1 fas fa-bookmark fa-xs"></i>
+                      <span className="font-bold">Guardar</span>
+                    </div>
                 </div>
               </div>
             </div>
