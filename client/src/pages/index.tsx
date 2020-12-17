@@ -7,20 +7,20 @@ import relativeTime from  'dayjs/plugin/relativeTime'
 import 'dayjs/locale/es'
 
 import { Post } from '../types'
-import { GetServerSideProps } from 'next'
+/* import { GetServerSideProps } from 'next' */
 
 // para el tiempo en ves de momentjs
 dayjs.extend(relativeTime)
 
-export default function Home({ posts }) {
+export default function Home() {
 
-  /* const [posts, setPosts] = useState<Post[]>([])
+  const [posts, setPosts] = useState<Post[]>([])
 
   useEffect( () => {
     Axios.get('/posts')
     .then(res => setPosts(res.data))
     .catch(err => console.log(err))
-  },[])  */
+  },[]) 
 
   return (
     <div className="pt-12">
@@ -107,7 +107,7 @@ export default function Home({ posts }) {
 //Function for Server Side Rendering
 // esta funcion se ejecuta en el lado del servidor antes que esta pagina se cree y renderice
 // permite renderizar la pagina ya con los datos
-export const getServerSideProps: GetServerSideProps = async (context) => {
+/* export const getServerSideProps: GetServerSideProps = async (context) => {
   try{
     const res = await Axios.get('/posts')
 
@@ -115,4 +115,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }catch(err){
     return { props: { error: "Algo ha salido mal"}}
   }
-}
+} */
