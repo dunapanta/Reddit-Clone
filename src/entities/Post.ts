@@ -60,6 +60,16 @@ export default class Post extends Entity{
         return `/r/${this.subName}/${this.identifier}/${this.slug}`
     }
 
+    // another virtual field para el total de comentarios
+    @Expose() get commentCount(): number {
+        return this.comments?.length
+    }
+
+    // obtener el conteo de votos
+    @Expose() get voteScore(): number {
+        return this.votes?.reduce((prev, curr) => prev + (curr.value || 0), 0)
+    }
+
     @BeforeInsert()
     makeIdAndSlug(){
         this.identifier = makeId(7)
