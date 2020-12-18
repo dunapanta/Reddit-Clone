@@ -52,7 +52,7 @@ export default class Post extends Entity{
     @OneToMany( () => Comment, comment => comment.post)
     comments: Comment[]
 
-    @OneToMany( () => Vote, vote => vote.comment)
+    @OneToMany( () => Vote, vote => vote.post)
     votes: Vote[]
 
     //Enviar url de posts desde el servidor
