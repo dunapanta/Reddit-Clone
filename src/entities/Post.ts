@@ -6,6 +6,7 @@ import Entity from './Entity'
 import User from "./User";
 import Sub from "./Sub"
 import Comment from "./Comment"
+import Vote from "./Vote";
 
 @TOEntity("posts")
 export default class Post extends Entity{
@@ -50,6 +51,9 @@ export default class Post extends Entity{
 
     @OneToMany( () => Comment, comment => comment.post)
     comments: Comment[]
+
+    @OneToMany( () => Vote, vote => vote.comment)
+    votes: Vote[]
 
     //Enviar url de posts desde el servidor
     @Expose() get url(): string {
