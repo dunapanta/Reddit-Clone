@@ -17,8 +17,15 @@ export default function PostCard({ post }) {
     return (
         <div key={post.identifier} className="flex mb-4 bg-white rounded">
               {/* Vote section */}
-              <div className="w-10 text-center bg-gray-200 rounded-l">
-                <p>V</p>
+              <div className="w-10 py-4 text-center bg-gray-200 rounded-l">
+                {/* UpVote */}
+                <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500">
+                    <i className="icon-arrow-up"></i>
+                </div>
+                {/* DownVote */}
+                <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-600">
+                    <i className="icon-arrow-down"></i>
+                </div>
               </div>
               {/* Post data section */}
               <div className="w-full p-2">
