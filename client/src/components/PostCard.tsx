@@ -5,6 +5,7 @@ import 'dayjs/locale/es'
 
 
 import { Post } from '../types'
+import Axios from 'axios'
 
 // para el tiempo en ves de momentjs
 dayjs.extend(relativeTime)
@@ -13,17 +14,32 @@ interface PostCardProps {
     post:Post
 }
 
-export default function PostCard({ post }) {
+export default function PostCard({ post }: PostCardProps) {
+
+    const vote = async (value) => {
+        try{
+            const res = await Axios.post('/misc/vote', {
+                identifier: post.identifier,
+                slug: post.slug,
+                value: value
+            })
+            console.log(res.data)
+        }catch(err){
+            console.log(err)
+        }
+    }
+
     return (
         <div key={post.identifier} className="flex mb-4 bg-white rounded">
               {/* Vote section */}
               <div className="w-10 py-4 text-center bg-gray-200 rounded-l">
                 {/* UpVote */}
-                <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500">
+                <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500" onClick={ () => vote(1)}>
                     <i className="icon-arrow-up"></i>
                 </div>
+                <p className="text-xs font-bold">{post.voteScore}</p>
                 {/* DownVote */}
-                <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-600">
+                <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-600" onClick={ () => vote(-1)}>
                     <i className="icon-arrow-down"></i>
                 </div>
               </div>
@@ -70,7 +86,7 @@ export default function PostCard({ post }) {
                     <a >
                       <div className="px-1 py-1 mr-1 text-xs text-gray-400 rounded cursor-pointer hover:bg-gray-200">
                         <i className="mr-1 fas fa-comment-alt fa-xs"></i>
-                        <span className="font-bold">Comentarios</span>
+                        <span className="font-bold">{post.commentCount} Comentarios</span>
                       </div>
                     </a>
                   </Link>

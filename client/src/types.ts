@@ -9,4 +9,7 @@ export interface Post {
     updatedAt: string
     // Vitual fields
     url: string
+    voteScore?: number
+    commentCount?: number
+    userVote?: number
 }
