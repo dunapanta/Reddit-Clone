@@ -4,6 +4,7 @@ import Post from '../entities/Post'
 import Sub from '../entities/Sub'
 
 import auth from '../middleware/auth'
+import user from "../middleware/user";
 
 const createPost = async (req: Request, res: Response) => {
     const { title, body, sub } = req.body
@@ -36,6 +37,10 @@ const getPosts = async (_: Request, res: Response) => {
             order: { createdAt: 'DESC'},
             relations: ['comments', 'votes', 'sub'],
         })
+
+        if(res.locals.user){
+            posts.forEach(p => p.setUserVote(res.locals.user))
+        }
 
         return res.json(posts)
     }catch(err){
@@ -87,9 +92,9 @@ const commentOnPost = async (req: Request, res: Response) => {
 
 const router = Router()
 
-router.post('/', auth, createPost)
-router.get('/:identifier/:slug', getPost)
-router.get('/', getPosts)
-router.post('/:identifier/:slug/comments', auth, commentOnPost)
+router.post('/', user, auth, createPost)
+router.get('/:identifier/:slug', getPost) 
+router.get('/', user, getPosts) //solo user retorna los posts en / sin necesidad de estar autenticado pero si hay user sirve para los votos que dio
+router.post('/:identifier/:slug/comments', user, auth, commentOnPost)
 
 export default router
