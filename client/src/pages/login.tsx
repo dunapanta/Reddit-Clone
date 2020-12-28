@@ -4,6 +4,8 @@ import Link from 'next/link'
 import Axios from 'axios'
 import { useRouter } from 'next/router'
 
+import { useAuthDispatch } from '../context/auth'
+
 import InputGroup from '../components/InputGroup'
 
 export default function Register() {
@@ -14,14 +16,19 @@ export default function Register() {
 
   const router = useRouter()
 
+  // Para almacenar datos de login en el contexto
+  const dispatch = useAuthDispatch()
+
   const submitForm = async (event: FormEvent) => {
       event.preventDefault()
 
       try{
-         await Axios.post('/auth/login', {
+         const res = await Axios.post('/auth/login', {
             username, 
             password
         }/* , { withCredentials: true } */) //para cookies, pero mejor lo incluyo en _app.tsx globalmente
+
+        dispatch({ type: 'LOGIN', payload: res.data })
 
       router.push('/')
 

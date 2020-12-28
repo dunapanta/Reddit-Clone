@@ -43,6 +43,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         authenticated: false
     })
     
+    //La ventaja de utilizar estos dos providers en vez de estar destructurando puedo utilizarlo asi -- const dispatch = useAuthDispatch() -- como en login.tsx
+    // y te salva del nested destructuring
     return(
         <DispatchContext.Provider value={dispatch}>
             <StateContext.Provider value={state}>
