@@ -54,5 +54,5 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     )
 }
 
-export const useAthState = () => useContext(StateContext)
+export const useAuthState = () => useContext(StateContext)
 export const useAuthDispatch = () => useContext(DispatchContext)
