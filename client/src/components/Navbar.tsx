@@ -7,7 +7,7 @@ import Axios from 'axios'
 
 const Navbar:React.FC = () => {
 
-  const { authenticated } = useAuthState()
+  const { authenticated, loading } = useAuthState()
   const dispatch = useAuthDispatch()
 
   const logout = () => {
@@ -48,7 +48,8 @@ const Navbar:React.FC = () => {
           </div>
           {/* Auth Buttons */}
           <div className="flex">
-            { authenticated ? (
+            {/* loading para no mostrar los botones al momento de recargar la pagina */}
+            { !loading && (authenticated ? (
               //Boton cerrar sesion
               <button 
               className="w-32 py-1 mr-4 leading-5 hollow blue button"
@@ -69,7 +70,7 @@ const Navbar:React.FC = () => {
                   </a>
                 </Link>
               </Fragment>
-            )}
+            ))}
           </div>
         </div>
     )
