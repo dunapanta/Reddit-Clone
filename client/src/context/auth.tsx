@@ -1,4 +1,5 @@
-import { createContext, useContext, useReducer } from "react";
+import Axios from "axios";
+import { createContext, useContext, useEffect, useReducer } from "react";
 import { User } from "../types"
 
 interface State {
@@ -42,6 +43,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         user: null,
         authenticated: false
     })
+
+    /* const dispatchDestructure = (type: string, payload?: any) => dispatch({ type, payload }) */
+
+    //Para estar logeado si tengo una cookie valida (en casos de que recargo la pagina)
+    useEffect( () => {
+        async function loadUser() {
+            try{
+                const res = await Axios.get('/auth/me')
+                dispatch({ type: 'LOGIN', payload: res.data })
+            }catch(err){
+                console.log(err)
+            }
+        }
+        loadUser()
+    }, [])
     
     //La ventaja de utilizar estos dos providers en vez de estar destructurando puedo utilizarlo asi -- const dispatch = useAuthDispatch() -- como en login.tsx
     // y te salva del nested destructuring
