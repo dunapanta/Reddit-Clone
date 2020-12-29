@@ -5,6 +5,7 @@ import Axios from 'axios'
 import { useRouter } from 'next/router'
 
 import InputGroup from '../components/InputGroup'
+import { useAuthState } from '../context/auth'
 
 export default function Register() {
 
@@ -15,6 +16,10 @@ export default function Register() {
   const [errors, setErrors] = useState<any>({})
 
   const router = useRouter()
+
+  // Para saber si ya esta authenticado y quiere ir a login page redireccionar a home
+  const { authenticated } = useAuthState()
+  if(authenticated) router.push('/')
 
   const submitForm = async (event: FormEvent) => {
       event.preventDefault()
