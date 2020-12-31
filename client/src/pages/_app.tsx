@@ -21,9 +21,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   const authRoute = authRoutes.includes(pathname)
 
   return (
+    //dedupingInterval si el usuario trata de obtener otra vez los datos en ese tiempo mejor se saca de cache y se evita volver a hacer la llamada
     <SWRConfig 
       value={{
-        fetcher: (url) => Axios.get(url).then(res => res.data)
+        fetcher: (url) => Axios.get(url).then(res => res.data),
+        dedupingInterval: 10000
       }}
     >
         <AuthProvider>
