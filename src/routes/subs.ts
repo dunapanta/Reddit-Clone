@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import { isEmpty } from 'class-validator'
 import { getRepository } from 'typeorm'
 import multer, { FileFilterCallback } from 'multer'
@@ -82,6 +82,25 @@ const getSub = async (req: Request, res: Response) => {
 }
 
 // Multer para imagenes
+
+const ownSub = async (req: Request, res: Response, next: NextFunction) => {
+    const user: User = res.locals.user
+
+    try{
+        const sub = await Sub.findOneOrFail({ where: { name: req.params.name }})
+
+        if(sub.username !== user.username){
+            return res.status(403).json({ error : 'Este Sub no te pertenece'})
+        }
+
+        res.locals.sub = sub
+
+        return next()
+    }catch(err){  
+        return res.status(500).json({ error: "Algo ha ido mal" })
+    }
+}
+
 const upload = multer({
     storage: multer.diskStorage({
         destination: 'public/images',
@@ -109,6 +128,6 @@ const router = Router()
 router.post('/', user, auth, createSub)
 router.get('/:name', user, getSub)
 // el usuario necesita estar autenticado y ser el dueño para subir la imagen
-router.post('/:name/image', user, auth, upload.single('file'), uploadSubImage)
+router.post('/:name/image', user, auth, ownSub, upload.single('file'), uploadSubImage)
 
 export default router
