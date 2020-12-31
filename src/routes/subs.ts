@@ -74,7 +74,7 @@ const getSub = async (req: Request, res: Response) => {
 
     }catch(err){
         console.log(err)
-        return res.status(500).json({ error: 'Algo ha salido mal'})
+        return res.status(404).json({ sub: 'Sub no encontrado'})
     }
 }
 

@@ -14,6 +14,15 @@ import { deserialize } from 'class-transformer'
 Axios.defaults.baseURL = 'http://localhost:5000/api'
 Axios.defaults.withCredentials = true
 
+const fetcher = async (url: string) => {
+  try{
+    const res = await Axios.get(url)
+    return res.data
+  }catch(err){
+    throw err.response.data
+  }
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
   const { pathname } = useRouter()
   /* const authRoute = pathname === '/register' || pathname == '/login' */
@@ -24,13 +33,15 @@ function MyApp({ Component, pageProps }: AppProps) {
     //dedupingInterval si el usuario trata de obtener otra vez los datos en ese tiempo mejor se saca de cache y se evita volver a hacer la llamada
     <SWRConfig 
       value={{
-        fetcher: (url) => Axios.get(url).then(res => res.data),
+        fetcher,
         dedupingInterval: 10000
       }}
     >
         <AuthProvider>
         {!authRoute && <Navbar />}
-        <Component {...pageProps} />
+        <div className={authRoute ? '' : "pt-12"}>
+          <Component {...pageProps} />
+        </div>
       </AuthProvider>
     </SWRConfig>
   )
