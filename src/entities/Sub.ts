@@ -3,6 +3,7 @@ import {Entity as TOEntity, Column, Index, ManyToOne, JoinColumn, OneToMany} fro
 import Entity from './Entity'
 import User from "./User";
 import Post from './Post'
+import { Expose } from "class-transformer";
 
 @TOEntity("subs")
 export default class Sub extends Entity{
@@ -39,5 +40,18 @@ export default class Sub extends Entity{
 
     @OneToMany(() => Post, post => post.sub)
     posts: Post[]
+
+    // url is the full url and urn is just the name
+    // this function returns the domain concat with the image urn or gravatar placeholder if there is no image
+    @Expose()
+    get imageUrl(): string {
+        return this.imageUrn ? `${process.env.APP_URL}/images/${this.imageUrn}` : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'
+    }
+
+    //Banner
+    @Expose()
+    get bannerUrl(): string | undefined {
+        return this.bannerUrn ? `${process.env.APP_URL}/images/${this.bannerUrn}` : undefined
+    }
     
 }
