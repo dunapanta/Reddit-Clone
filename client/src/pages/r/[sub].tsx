@@ -1,20 +1,60 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Fragment } from "react";
+import { ChangeEvent, createRef, Fragment, useEffect, useState } from "react";
 import useSWR from 'swr'
 import Image from 'next/image'
+import classNames from 'classnames'
 
 import PostCard from "../../components/PostCard";
 import { Sub } from "../../types";
+import { useAuthState } from '../../context/auth'
+import Axios from "axios";
 
 
 export default function SubPage(){
+    //Local State
+    const [ownSub, setOwnSub] = useState(false)
+    //Global State
+    const { authenticated, user } = useAuthState()
+    //Utils
     const router = useRouter()
-
+    const fileInputRef = createRef<HTMLIFrameElement>()
     const subName = router.query.sub
 
     //en SWR si se pasa null no hace ninguna llamada
-    const { data: sub, error } = useSWR<Sub>(subName ? `/subs/${subName}` : null)
+    const { data: sub, error, revalidate } = useSWR<Sub>(subName ? `/subs/${subName}` : null)
+
+    useEffect( () => {
+        if(!sub){
+            return
+        }
+        setOwnSub(authenticated && user.username === sub.username)
+    }, [sub])
+
+    const openFileInput = (type: string) => {
+        if(!ownSub) return
+
+        fileInputRef.current.name = type
+        fileInputRef.current.click()
+    }
+
+    const uploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files[0]
+
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('type', fileInputRef.current.name)
+
+        try{
+            await Axios.post<Sub>(`/subs/${sub.name}/image`, formData, {
+                headers: {'Content-Type': 'multipart/form-data'}
+            })
+            //para que el cambio de las imagenes se refleje inmediatamente
+            revalidate()
+        }catch(err){
+            console.log(err)
+        }
+    }
 
     if(error) router.push('/')
 
@@ -39,10 +79,14 @@ export default function SubPage(){
             </Head>
             { sub && (
                 <Fragment>
+                    <input type="file" hidden={true} ref={fileInputRef} onChange={uploadImage}/>
                     {/* Sub info and images */}
                     <div>
                         {/* Banner Image */}
-                        <div className="bg-blue-500">
+                        <div 
+                            className={classNames("bg-blue-500", { 'cursor-pointer': ownSub})}
+                            onClick={ () => openFileInput('banner') }
+                        >
                             {sub.bannerUrl ? (
                                 <div className="h-56 bg-blue-500" style={{
                                     backgroundImage: `url(${sub.bannerUrl})`,
@@ -62,7 +106,8 @@ export default function SubPage(){
                                     <Image
                                         src={sub.imageUrl}
                                         alt="Sub"
-                                        className="rounded-full"
+                                        className={classNames("rounded-full", { 'cursor-pointer': ownSub})}
+                                        onClick={ () => openFileInput('image') }
                                         width={70}
                                         height={70}
                                     />
