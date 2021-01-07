@@ -33,7 +33,8 @@ export default function Register() {
 
         dispatch({ type: 'LOGIN', payload: res.data })
 
-      router.push('/')
+      /* router.push('/') */
+      router.back()
 
       }catch(err){
         console.log(err)
