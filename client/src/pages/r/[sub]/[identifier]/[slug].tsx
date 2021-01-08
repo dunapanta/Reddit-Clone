@@ -1,17 +1,54 @@
+import Axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import dayjs from 'dayjs'
+import relativeTime from  'dayjs/plugin/relativeTime'
+import 'dayjs/locale/es'
+import classNames from 'classnames'
+
+import Sidebar from "../../../../components/Sidebar";
 import { Post } from "../../../../types";
+import { useAuthState } from "../../../../context/auth";
+
+// para el tiempo en ves de momentjs
+dayjs.extend(relativeTime)
+
 
 export default function PostPage() {
 
     const router = useRouter()
     const { identifier, sub, slug } = router.query
 
+    const { authenticated } = useAuthState()
+
     const { data: post, error } = useSWR<Post>((identifier && slug) ? `/posts/${identifier}/${slug}` : null)
     if(error) router.push('/')
+
+    const vote = async (value: number) => {
+        //if not logged in go to login
+        if(!authenticated){
+            router.push('/login')
+        }
+
+        //if vote is the same reset vote
+        if(value === post.userVote){
+            value = 0
+        }
+        
+        try{
+            const res = await Axios.post('/misc/vote', {
+                identifier: post.identifier,
+                slug: post.slug,
+                value: value
+            })
+            console.log(res.data)
+        }catch(err){
+            console.log(err)
+        }
+    }
 
     return(
         <>
@@ -38,6 +75,35 @@ export default function PostPage() {
                     </div>
                 </a>
             </Link>
+            <div className="container flex pt-5">
+                {/* Post */}
+                <div className="w-160">
+                    <div className="bg-white rounded">
+                        {post && (
+                            <div className="flex">
+                                {/* Vote section */}
+                                <div className="w-10 py-4 text-center bg-gray-200 rounded-l">
+                                    {/* UpVote */}
+                                    <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500" onClick={ () => vote(1)}>
+                                        <i className={classNames('icon-arrow-up', {
+                                        'text-red-500': post.userVote === 1
+                                        })}></i>
+                                    </div>
+                                    <p className="text-xs font-bold">{post.voteScore}</p>
+                                    {/* DownVote */}
+                                    <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-600" onClick={ () => vote(-1)}>
+                                    <i className={classNames('icon-arrow-down', {
+                                        'text-blue-600': post.userVote === -1
+                                        })}></i>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+                {/* Sidebar */}
+                {post && <Sidebar sub={post.sub}/>}
+            </div>
         </>
     )
 }

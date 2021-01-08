@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useRouter } from "next/router";
 import dayjs from 'dayjs'
 import relativeTime from  'dayjs/plugin/relativeTime'
 import 'dayjs/locale/es'
@@ -7,6 +8,7 @@ import classNames from 'classnames'
 
 import { Post } from '../types'
 import Axios from 'axios'
+import { useAuthState } from '../context/auth'
 
 // para el tiempo en ves de momentjs
 dayjs.extend(relativeTime)
@@ -17,7 +19,18 @@ interface PostCardProps {
 
 export default function PostCard({ post }: PostCardProps) {
 
-    const vote = async (value) => {
+    const router = useRouter()
+    const { authenticated } = useAuthState()
+
+    const vote = async (value: number) => {
+        if(!authenticated){
+          router.push('/login')
+        }
+
+        //if vote is the same reset vote
+        if(value === post.userVote){
+          value = 0
+        }
         try{
             const res = await Axios.post('/misc/vote', {
                 identifier: post.identifier,
