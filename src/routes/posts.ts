@@ -54,8 +54,12 @@ const getPost = async (req: Request, res: Response) => {
     const {identifier, slug} = req.params
     try{
         const post = await Post.findOneOrFail({ identifier, slug }, {
-            relations: ['sub']
+            relations: ['sub', 'votes']
         })
+
+        if(res.locals.user){
+            post.setUserVote(res.locals.user)
+        }
 
         return res.json(post)
     }catch(err){
@@ -93,7 +97,7 @@ const commentOnPost = async (req: Request, res: Response) => {
 const router = Router()
 
 router.post('/', user, auth, createPost)
-router.get('/:identifier/:slug', getPost) 
+router.get('/:identifier/:slug', user, getPost) 
 router.get('/', user, getPosts) //solo user retorna los posts en / sin necesidad de estar autenticado pero si hay user sirve para los votos que dio
 router.post('/:identifier/:slug/comments', user, auth, commentOnPost)
 
