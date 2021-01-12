@@ -10,7 +10,7 @@ import 'dayjs/locale/es'
 import classNames from 'classnames'
 
 import Sidebar from "../../../../components/Sidebar";
-import { Post } from "../../../../types";
+import { Post, Comment } from "../../../../types";
 import { useAuthState } from "../../../../context/auth";
 
 // para el tiempo en ves de momentjs
@@ -25,16 +25,18 @@ export default function PostPage() {
     const { authenticated } = useAuthState()
 
     const { data: post, error } = useSWR<Post>((identifier && slug) ? `/posts/${identifier}/${slug}` : null)
+    const { data: comments } = useSWR<Comment[]>((identifier && slug) ? `/posts/${identifier}/${slug}/comments` : null)
+
     if(error) router.push('/')
 
-    const vote = async (value: number) => {
+    const vote = async (value: number, comment?: Comment) => {
         //if not logged in go to login
         if(!authenticated){
             router.push('/login')
         }
 
-        //if vote is the same reset vote
-        if(value === post.userVote){
+        //if vote is the same reset vote for either for post or comment
+        if((!comment && value === post.userVote) || (comment && comment.userVote === value)){
             value = 0
         }
         
@@ -42,6 +44,7 @@ export default function PostPage() {
             const res = await Axios.post('/misc/vote', {
                 identifier: post.identifier,
                 slug: post.slug,
+                commentIdentifier: comment?.identifier, // if the comment is null or undefined this will not be send
                 value: value
             })
             console.log(res.data)
@@ -80,6 +83,7 @@ export default function PostPage() {
                 <div className="w-160">
                     <div className="bg-white rounded">
                         {post && (
+                            <>
                             <div className="flex">
                                 {/* Vote section */}
                                 <div className="w-10 py-4 text-center bg-gray-200 rounded-l">
@@ -139,6 +143,27 @@ export default function PostPage() {
                                     </div>
                                 </div>
                             </div>
+                            {comments?.map(comment => ( 
+                                <div className="flex" key={comment.identifier}>
+                                    {/* Vote section */}
+                                    <div className="w-10 py-4 text-center bg-gray-200 rounded-l">
+                                        {/* UpVote */}
+                                        <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500" onClick={ () => vote(1, comment)}>
+                                            <i className={classNames('icon-arrow-up', {
+                                            'text-red-500': comment.userVote === 1
+                                            })}></i>
+                                        </div>
+                                        <p className="text-xs font-bold">{comment.voteScore}</p>
+                                        {/* DownVote */}
+                                        <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-600" onClick={ () => vote(-1, comment)}>
+                                        <i className={classNames('icon-arrow-down', {
+                                            'text-blue-600': comment.userVote === -1
+                                            })}></i>
+                                        </div>
+                                    </div>
+                                </div>
+                        )) }
+                        </>
                         )}
                     </div>
                 </div>
