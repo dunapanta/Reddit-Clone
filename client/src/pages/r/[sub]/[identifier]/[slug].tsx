@@ -86,7 +86,7 @@ export default function PostPage() {
                             <>
                             <div className="flex">
                                 {/* Vote section */}
-                                <div className="w-10 py-4 text-center bg-gray-200 rounded-l">
+                                <div className="flex-shrink-0 w-10 py-4 text-center bg-gray-200 rounded-l">
                                     {/* UpVote */}
                                     <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500" onClick={ () => vote(1)}>
                                         <i className={classNames('icon-arrow-up', {
@@ -146,7 +146,7 @@ export default function PostPage() {
                             {comments?.map(comment => ( 
                                 <div className="flex" key={comment.identifier}>
                                     {/* Vote section */}
-                                    <div className="w-10 py-4 text-center bg-gray-200 rounded-l">
+                                    <div className="flex-shrink-0 w-10 py-4 text-center bg-gray-200 rounded-l">
                                         {/* UpVote */}
                                         <div className="w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500" onClick={ () => vote(1, comment)}>
                                             <i className={classNames('icon-arrow-up', {
@@ -160,6 +160,19 @@ export default function PostPage() {
                                             'text-blue-600': comment.userVote === -1
                                             })}></i>
                                         </div>
+                                    </div>
+                                    <div className="p-2">
+                                        <p className="mb-1 text-xs leading-none">
+                                            <Link href={`/u/${comment.username}`}>
+                                                <a className="mr-1 font-bold hover:underline">
+                                                    {comment.username}
+                                                </a>
+                                            </Link>
+                                            <span className="text-gray-600">
+                                                {`${comment.voteScore} puntos • ${dayjs(comment.createdAt).locale("es").fromNow()}`}
+                                            </span>
+                                        </p>
+                                        <p>{comment.body}</p>
                                     </div>
                                 </div>
                         )) }
