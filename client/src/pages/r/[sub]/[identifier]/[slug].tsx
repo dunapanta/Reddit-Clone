@@ -25,7 +25,7 @@ export default function PostPage() {
     const { authenticated } = useAuthState()
 
     const { data: post, error } = useSWR<Post>((identifier && slug) ? `/posts/${identifier}/${slug}` : null)
-    const { data: comments } = useSWR<Comment[]>((identifier && slug) ? `/posts/${identifier}/${slug}/comments` : null)
+    const { data: comments, revalidate } = useSWR<Comment[]>((identifier && slug) ? `/posts/${identifier}/${slug}/comments` : null)
 
     if(error) router.push('/')
 
@@ -41,13 +41,14 @@ export default function PostPage() {
         }
         
         try{
-            const res = await Axios.post('/misc/vote', {
+            await Axios.post('/misc/vote', {
                 identifier: post.identifier,
                 slug: post.slug,
                 commentIdentifier: comment?.identifier, // if the comment is null or undefined this will not be send
                 value: value
             })
-            console.log(res.data)
+            
+            revalidate() //de swr fetch the data again for update the ui
         }catch(err){
             console.log(err)
         }
@@ -143,6 +144,7 @@ export default function PostPage() {
                                     </div>
                                 </div>
                             </div>
+                            <hr />
                             {comments?.map(comment => ( 
                                 <div className="flex" key={comment.identifier}>
                                     {/* Vote section */}
