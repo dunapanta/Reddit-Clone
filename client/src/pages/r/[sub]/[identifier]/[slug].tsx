@@ -1,3 +1,4 @@
+import { FormEvent, useState } from "react";
 import Axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
@@ -20,9 +21,12 @@ dayjs.extend(relativeTime)
 export default function PostPage() {
 
     const router = useRouter()
+    //Local State
+    const [newComment, setNewComment] = useState('')
+
     const { identifier, sub, slug } = router.query
 
-    const { authenticated } = useAuthState()
+    const { authenticated, user } = useAuthState()
 
     const { data: post, error } = useSWR<Post>((identifier && slug) ? `/posts/${identifier}/${slug}` : null)
     const { data: comments, revalidate } = useSWR<Comment[]>((identifier && slug) ? `/posts/${identifier}/${slug}/comments` : null)
@@ -49,6 +53,20 @@ export default function PostPage() {
             })
             
             revalidate() //de swr fetch the data again for update the ui
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    const submitComment = async (event: FormEvent) => {
+        event.preventDefault()
+
+        if(newComment.trim() === '') return
+
+        try{
+            await Axios.post(`/posts/${post.identifier}/${post.slug}/comments`, { body: newComment })
+            setNewComment('')
+            revalidate()
         }catch(err){
             console.log(err)
         }
@@ -144,7 +162,46 @@ export default function PostPage() {
                                     </div>
                                 </div>
                             </div>
+                            {/* Comment input area */}
+                            <div className="pl-10 pr-6 mb-4">
+                                {authenticated ? (
+                                    <div>
+                                        <p className="mb-1 text-xs">
+                                            Comentar como {' '}
+                                            <Link href={`/u/${user.username}`}>
+                                                <a className="font-semibold text-blue-500">
+                                                    {user.username}
+                                                </a>
+                                            </Link>
+                                        </p>
+                                        <form onSubmit={submitComment}>
+                                            <textarea
+                                                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-gray-600"
+                                                onChange={ e => setNewComment(e.target.value) }
+                                                value={newComment}>
+                                            </textarea>
+                                            <div className="flex justify-end">
+                                                <button className="px-3 py-1 blue button" disabled={newComment.trim() === ''}>Comentar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center justify-between px-2 py-4 border border-gray-200 rounded">
+                                        <p className="text-sm font-semibold text-gray-400">Inicia sesión o registrate para dejar un comentario</p>
+                                        <div className="flex">
+                                            <Link href="/login">
+                                                <a className="flex-shrink-0 px-1 py-2 mr-2 max-w-2 hollow blue button">Iniciar Sesión</a>
+                                            </Link>
+                                            <Link href="/login">
+                                                <a className="px-1 py-2 blue button">Registrarse</a>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                )}       
+                            </div>
                             <hr />
+                            {/* Comments feed  */}
+
                             {comments?.map(comment => ( 
                                 <div className="flex" key={comment.identifier}>
                                     {/* Vote section */}

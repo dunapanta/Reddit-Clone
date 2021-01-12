@@ -7,7 +7,7 @@
         @apply inline-block text-xs font-bold text-center uppercase border rounded;
     }
     .button.blue {
-        @apply text-white bg-blue-500 border-blue-500;
+        @apply text-white bg-blue-500 border-blue-500 disabled:bg-blue-300 disabled:border-blue-300; /* for disabled to work we need to specify on tailwind.config von variants, extend */
     }
     .button.blue:hover {
         @apply bg-blue-300 border-blue-300;
