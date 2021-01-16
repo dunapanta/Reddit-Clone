@@ -31,6 +31,7 @@ export default function Submit() {
         try{
             //return type post
             const { data: post } = await Axios.post<Post>('/posts', { title, body, sub: sub.name })
+
             router.push(`/r/${sub.name}/${post.identifier}/${post.slug}`)
 
         }catch(err){
@@ -67,6 +68,7 @@ export default function Submit() {
                             className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-gray-600"
                             value={body}
                             placeholder="Texto (opcional)"
+                            onChange={ e => setBody(e.target.value )}
                             rows={4}
                         >
                         </textarea>
