@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Axios from 'axios';
 
 import Sidebar from "../../../components/Sidebar";
-import { Sub } from '../../../types';
+import { Post, Sub } from '../../../types';
 import Head from 'next/head';
 
 export default function Submit() {
@@ -29,7 +29,9 @@ export default function Submit() {
         }
 
         try{
-            await Axios.post('/posts', { title, body, sub: sub.name})
+            //return type post
+            const { data: post } = await Axios.post<Post>('/posts', { title, body, sub: sub.name })
+            router.push(`/r/${sub.name}/${post.identifier}/${post.slug}`)
 
         }catch(err){
             console.log(err)
