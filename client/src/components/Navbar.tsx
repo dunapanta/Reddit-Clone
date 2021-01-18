@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import RedditLogo from '../images/reddit.svg'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 
 import { useAuthState, useAuthDispatch } from '../context/auth'
 import Axios from 'axios'
+import { Sub } from '../types'
 
 const Navbar:React.FC = () => {
+
+  const [name, setName] = useState('')
+  const [subs, setSubs] = useState<Sub[]>([])
 
   const { authenticated, loading } = useAuthState()
   const dispatch = useAuthDispatch()
@@ -22,6 +26,19 @@ const Navbar:React.FC = () => {
       window.location.reload()
     })
     .catch(err => console.log(err))
+  }
+
+  const searchSubs = async (subName: string) => {
+    setName(subName)
+
+    try{
+      const { data } = await Axios.get(`/subs/search/${subName}`)
+      setSubs(data)
+      console.log(data)
+
+    }catch(err){
+      console.log(err)
+    }
   }
 
     return (
@@ -44,6 +61,8 @@ const Navbar:React.FC = () => {
               type="text"
               className="py-1 pr-3 bg-transparent rounded w-160 focus:outline-none"
               placeholder="Buscar"
+              value={name}
+              onChange={ e => searchSubs(e.target.value)}
             />
           </div>
           {/* Auth Buttons */}
