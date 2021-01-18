@@ -6,6 +6,7 @@ import Axios from 'axios';
 import Sidebar from "../../../components/Sidebar";
 import { Post, Sub } from '../../../types';
 import Head from 'next/head';
+import { GetServerSideProps } from 'next';
 
 export default function Submit() {
     
@@ -87,4 +88,23 @@ export default function Submit() {
             {sub && <Sidebar sub={sub}/>}
         </div>
     )
+}
+
+//not load this submit page if the user is not authenticated 
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+    // send a request to the me route validate that the cookie has a validate token
+    try{
+        const cookie = req.headers.cookie
+        if(!cookie) throw new Error('Falta el token de cookie de autenticacion')
+
+        //forward the cookie that we received
+        await Axios.get('/auth/me', { headers: { cookie }})
+
+        // return empty props becouse we just want to know if the user is authenticated
+        return{ props: {}}
+
+    }catch(err){
+        // status code that starts with 3 are related to redirect and this redirect to login
+        res.writeHead(307, { Location: '/login' }).end()
+    }
 }
