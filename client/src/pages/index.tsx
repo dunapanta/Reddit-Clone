@@ -10,6 +10,7 @@ import Image from 'next/image'
 
 import { Post, Sub } from '../types'
 import PostCard from '../components/PostCard'
+import { useAuthState } from '../context/auth'
 /* import { GetServerSideProps } from 'next' */
 
 // para el tiempo en ves de momentjs
@@ -24,6 +25,8 @@ export default function Home() {
     .then(res => setPosts(res.data))
     .catch(err => console.log(err))
   },[])  */
+
+  const { authenticated } = useAuthState()
 
   /* Usando SWR */
   const { data: posts } = useSWR('/posts')
@@ -73,6 +76,13 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            {authenticated && (
+              <div className="p-4 border-t-2">
+                <Link href="/subs/create">
+                  <a className="w-full px-2 py-1 blue button">Crear Comunidad</a>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
