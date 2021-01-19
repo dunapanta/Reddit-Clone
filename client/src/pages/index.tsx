@@ -54,6 +54,7 @@ export default function Home() {
               {topSubs?.map((sub: Sub) => (
                 <div key={sub.name} className="flex items-center px-4 py-2 text-xs border-b">
                   <Link href={`/r/${sub.name}`}> 
+                    <a>
                       <Image
                         src={sub.imageUrl}
                         alt="Sub"
@@ -61,6 +62,7 @@ export default function Home() {
                         width={6 * 16 / 4}
                         height={6 * 16 / 4}
                       />
+                    </a>
                     </Link>
                   <Link href={`/r/${sub.name}`}>
                       <a className="ml-2 font-bold hover:cursor-pointer">
