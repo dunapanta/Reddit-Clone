@@ -24,7 +24,7 @@ export default function User() {
         </Head>
         {data && (
             <div className="container flex pt-5">
-                <div className="w-160">
+                <div className="w-full px-3 md:w-160">
                     {data.submissions.map( (submission: any) => {
                         if(submission.type == 'Post'){
                             return <PostCard key={submission.identifier} post={submission} />
@@ -60,7 +60,7 @@ export default function User() {
                         }
                     })}
                 </div>
-                <div className="ml-6 w-80">
+                <div className="hidden ml-6 md:block w-80">
                     <div className="bg-white rounded">
                         <div className="p-3 bg-blue-500 rounded-t">
                             <img 
