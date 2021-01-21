@@ -99,7 +99,7 @@ export default function PostPage() {
             </Link>
             <div className="container flex pt-5">
                 {/* Post */}
-                <div className="w-160">
+                <div className="px-3 w-160 md:w-160">
                     <div className="bg-white rounded">
                         {post && (
                             <>
