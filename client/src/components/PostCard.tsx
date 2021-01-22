@@ -44,7 +44,7 @@ export default function PostCard({ post }: PostCardProps) {
     }
 
     return (
-        <div key={post.identifier} className="flex mb-4 bg-white rounded">
+        <div key={post.identifier} className="flex mb-4 bg-white rounded" id={post.identifier}>
               {/* Vote section */}
               <div className="w-10 py-4 text-center bg-gray-200 rounded-l">
                 {/* UpVote */}

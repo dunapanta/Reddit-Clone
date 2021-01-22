@@ -26,11 +26,49 @@ export default function Home() {
     .catch(err => console.log(err))
   },[])  */
 
+  //Infinite Scroll kepp track of the current observed post
+  const [observedPost, setObservedPost] = useState('')
+
   const { authenticated } = useAuthState()
 
   /* Usando SWR */
   const { data: posts } = useSWR('/posts')
   const { data: topSubs } = useSWR('/misc/top-subs')
+
+  //Infinite Scroll
+  useEffect( () => {
+    // si es falsy o se no hay posts
+    if(!posts || posts.length === 0) return
+
+    //access the id of the bottom posts
+    const id = posts[posts.length -1].identifier
+
+    // si es uno nuevo para seguir a este
+    if(id !== observedPost){
+      setObservedPost(id)
+      // es mejor no usar observedPost porque puede que no haya cambiado todavia
+      observeElement(document.getElementById(id))
+    }
+
+  }, [posts])
+
+  const observeElement = (element: HTMLElement) => {
+    // si el elemento aun no esta renderizado en el DOM
+    if(!element) return
+
+    // IntersectionObserver viene en Intersection API, toma dos argumentos callback y options
+    // entries are like points on the div itself we just gonna track one point, el callback se ejecuta cuando llega a la interseccion
+    // el segundo argumento options tiene threshold en donde 0 es el top y 1 bottom
+    const observer = new IntersectionObserver( (entries) => {
+      if(entries[0].isIntersecting === true){
+        // codigo cuando llega a la interseccion
+        console.log('Post final')
+        observer.unobserve(element)
+      }
+    }, { threshold: 1 })
+    // observamos el elemento osea el ultimo post
+    observer.observe(element)
+  }
 
   return (
     <Fragment>
