@@ -5,7 +5,7 @@ import Link from 'next/link'
 import dayjs from 'dayjs'
 import relativeTime from  'dayjs/plugin/relativeTime'
 import 'dayjs/locale/es'
-import useSWR from 'swr'
+import useSWR, { useSWRInfinite } from 'swr'
 import Image from 'next/image'
 
 import { Post, Sub } from '../types'
@@ -32,10 +32,19 @@ export default function Home() {
   const { authenticated } = useAuthState()
 
   /* Usando SWR */
-  const { data: posts } = useSWR('/posts')
+  //const { data: posts } = useSWR('/posts')
   const { data: topSubs } = useSWR('/misc/top-subs')
 
   //Infinite Scroll
+
+  const { data, error, mutate, size: page, setSize: setPage, isValidating } 
+  = useSWRInfinite<Post[]>(
+      index =>
+        `/posts?page=${index}`,
+    );
+
+    const posts: Post[]= data ? [].concat(...data) : [];
+
   useEffect( () => {
     // si es falsy o se no hay posts
     if(!posts || posts.length === 0) return
@@ -63,6 +72,7 @@ export default function Home() {
       if(entries[0].isIntersecting === true){
         // codigo cuando llega a la interseccion
         console.log('Post final')
+        setPage(page +1)
         observer.unobserve(element)
       }
     }, { threshold: 1 })
@@ -78,9 +88,15 @@ export default function Home() {
       <div className="container flex pt-4">
         {/* Posts feed */}
         <div className="w-full px-3 md:w-160 md:p-0">
+          { isValidating && (
+            <p className="text-lg text-center">Cargando posts..</p>
+          )}
           {posts?.map(post =>(
             <PostCard key={post.identifier} post={post} />
           ))}
+          { isValidating && posts.length > 0 && (
+            <p className="text-lg text-center">Cargando más posts..</p>
+          )}
 
         </div>
         {/* Sidebar */}
