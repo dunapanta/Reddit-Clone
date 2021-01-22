@@ -31,11 +31,19 @@ const createPost = async (req: Request, res: Response) => {
 
 }
 // Latest posts
-const getPosts = async (_: Request, res: Response) => {
+const getPosts = async (req: Request, res: Response) => {
+    // for infinite scroll 
+    
+    const currentPage: number = (req.query.page || 0) as number //to cast it to number
+    //numero de items que se presentan en una pagina
+    const postsPerPage: number = (req.query.count || 8) as number
+
     try{
         const posts = await Post.find({ 
             order: { createdAt: 'DESC'},
             relations: ['comments', 'votes', 'sub'],
+            skip: currentPage * postsPerPage, //saltarse resultados segun la pagina
+            take: postsPerPage
         })
 
         if(res.locals.user){
