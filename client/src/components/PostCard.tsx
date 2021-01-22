@@ -15,9 +15,10 @@ dayjs.extend(relativeTime)
 
 interface PostCardProps {
     post:Post
+    revalidate?: Function
 }
 
-export default function PostCard({ post }: PostCardProps) {
+export default function PostCard({ post, revalidate }: PostCardProps) {
 
     const router = useRouter()
     const { authenticated } = useAuthState()
@@ -26,6 +27,8 @@ export default function PostCard({ post }: PostCardProps) {
         if(!authenticated){
           router.push('/login')
         }
+
+        if(value === post.userVote) value = 0
 
         //if vote is the same reset vote
         if(value === post.userVote){
@@ -37,7 +40,10 @@ export default function PostCard({ post }: PostCardProps) {
                 slug: post.slug,
                 value: value
             })
+
+            if(revalidate) revalidate()
             console.log(res.data)
+            
         }catch(err){
             console.log(err)
         }

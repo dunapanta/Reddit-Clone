@@ -37,7 +37,7 @@ export default function Home() {
 
   //Infinite Scroll
 
-  const { data, error, mutate, size: page, setSize: setPage, isValidating } 
+  const { data, error, mutate, size: page, setSize: setPage, isValidating , revalidate} 
   = useSWRInfinite<Post[]>(
       index =>
         `/posts?page=${index}`,
@@ -92,7 +92,7 @@ export default function Home() {
             <p className="text-lg text-center">Cargando posts..</p>
           )}
           {posts?.map(post =>(
-            <PostCard key={post.identifier} post={post} />
+            <PostCard key={post.identifier} post={post} revalidate={revalidate}/>
           ))}
           { isValidating && posts.length > 0 && (
             <p className="text-lg text-center">Cargando más posts..</p>
