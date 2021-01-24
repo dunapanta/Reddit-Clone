@@ -23,6 +23,8 @@ export default function PostCard({ post, revalidate }: PostCardProps) {
     const router = useRouter()
     const { authenticated } = useAuthState()
 
+    const isInSubPage = router.pathname === '/r/[sub]' // /r/[sub] to know if is in the Subpage
+
     const vote = async (value: number) => {
         if(!authenticated){
           router.push('/login')
@@ -70,9 +72,11 @@ export default function PostCard({ post, revalidate }: PostCardProps) {
               {/* Post data section */}
               <div className="w-full p-2">
                 <div className="flex items-center">
-                  <Link href={`/r/${post.subName}`}>
+                  {!isInSubPage && (
+                    <>
+                    <Link href={`/r/${post.subName}`}>
                     <img 
-                      src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" 
+                      src={post.sub.imageUrl}
                       className="w-6 h-6 mr-1 rounded-full cursor-pointer"
                     />
                   </Link>
@@ -81,8 +85,10 @@ export default function PostCard({ post, revalidate }: PostCardProps) {
                       /r/{post.subName}
                     </a>
                   </Link>
+                  <span className="mx-1 text-xs text-gray-500">•</span> 
+                  </>
+                  )}
                   <p className="text-xs text-gray-500">
-                    <span className="mx-1">•</span> 
                     Posteado por
                     <Link href={`/u/${post.username}`}>
                       <a className="mx-1 hover:underline">
