@@ -43,6 +43,8 @@ export default function Home() {
         `/posts?page=${index}`,
     );
 
+    //is only be true at the begining
+    const isInitialLoading = !data && !error
     const posts: Post[]= data ? [].concat(...data) : [];
 
   useEffect( () => {
@@ -88,7 +90,7 @@ export default function Home() {
       <div className="container flex pt-4">
         {/* Posts feed */}
         <div className="w-full px-3 md:w-160 md:p-0">
-          { isValidating && (
+          { isInitialLoading && (
             <p className="text-lg text-center">Cargando posts..</p>
           )}
           {posts?.map(post =>(
