@@ -172,7 +172,7 @@ const searchSubs =  async (req: Request, res: Response) => {
 
     } catch (err) {
         console.log(err)
-        return res.status(500).json({ error: 'Algon ha ido mal'})
+        return res.status(500).json({ error: 'Algo ha ido mal'})
     }
 }
 
