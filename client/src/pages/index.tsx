@@ -31,6 +31,10 @@ export default function Home() {
 
   const { authenticated } = useAuthState()
 
+  //for metatags
+  const description = "Reddit Clone es una red de comunidades basada en los intereses de las personas. Encuentra las comunidades que te interesan y forma parte de una comunidad en línea!"
+  const title = "Reddit Clone"
+
   /* Usando SWR */
   //const { data: posts } = useSWR('/posts')
   const { data: topSubs } = useSWR('/misc/top-subs')
@@ -85,7 +89,15 @@ export default function Home() {
   return (
     <Fragment>
       <Head>
-        <title>Reddit Clone</title>
+        <title>{title}</title>
+        <meta 
+          name="description" 
+          content={description}
+        ></meta>
+        <meta property="og:description" content={description} /> {/* open graph meta tags used by facebook to index pages on facebook and show some info about them*/}
+        <meta property="og:title" content={title} />
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:description" content={description} />
       </Head>
       <div className="container flex pt-4">
         {/* Posts feed */}
