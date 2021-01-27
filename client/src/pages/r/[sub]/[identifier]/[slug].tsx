@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
@@ -23,6 +23,7 @@ export default function PostPage() {
     const router = useRouter()
     //Local State
     const [newComment, setNewComment] = useState('')
+    const [description, setDescription] = useState('')
 
     const { identifier, sub, slug } = router.query
 
@@ -32,6 +33,16 @@ export default function PostPage() {
     const { data: comments, revalidate } = useSWR<Comment[]>((identifier && slug) ? `/posts/${identifier}/${slug}/comments` : null)
 
     if(error) router.push('/')
+
+    // useEffect for metatag
+     useEffect( () => {
+        if(!post){
+            return
+        }
+        let desc = post.body || post.title
+        desc = desc.substring(0, 158).concat('..')
+        setDescription(desc)
+    }, [post])
 
     const vote = async (value: number, comment?: Comment) => {
         //if not logged in go to login
@@ -76,6 +87,14 @@ export default function PostPage() {
         <>
             <Head>
                 <title>{post?.title}</title>
+                <meta 
+                name="description" 
+                content={description}
+                ></meta>
+                <meta property="og:description" content={description} /> {/* open graph meta tags used by facebook to index pages on facebook and show some info about them*/}
+                <meta property="og:title" content={post?.title} />
+                <meta property="twitter:title" content={post?.title} />
+                <meta property="twitter:description" content={description} />
             </Head>
             <Link href={`/r/${sub}`}>
                 <a>

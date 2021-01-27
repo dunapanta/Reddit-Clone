@@ -11,7 +11,7 @@ import '../styles/icons.css'
 import Navbar from '../components/Navbar'
 import { deserialize } from 'class-transformer'
 
-Axios.defaults.baseURL = 'http://localhost:5000/api'
+Axios.defaults.baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL + '/api'
 Axios.defaults.withCredentials = true
 
 const fetcher = async (url: string) => {
