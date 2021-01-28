@@ -52,18 +52,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         loading: true
     })
 
-    /* const dispatchDestructure = (type: string, payload?: any) => dispatch({ type, payload }) */
+    const dispatchDestructure = (type: string, payload?: any) => dispatch({ type, payload })
 
     //Para estar logeado si tengo una cookie valida (en casos de que recargo la pagina)
     useEffect( () => {
         async function loadUser() {
             try{
                 const res = await Axios.get('/auth/me')
-                dispatch({ type: 'LOGIN', payload: res.data })
+                dispatchDestructure('LOGIN', res.data)
             }catch(err){
                 console.log(err)
             }finally{
-                dispatch({ type: 'STOP_LOADING' })
+                dispatchDestructure('STOP_LOADING')
             }
         }
         loadUser()

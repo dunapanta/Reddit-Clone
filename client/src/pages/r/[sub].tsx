@@ -19,7 +19,7 @@ export default function SubPage(){
     const { authenticated, user } = useAuthState()
     //Utils
     const router = useRouter()
-    const fileInputRef = createRef<HTMLIFrameElement>()
+    const fileInputRef = createRef<HTMLInputElement>()
     const subName = router.query.sub
 
     //en SWR si se pasa null no hace ninguna llamada
