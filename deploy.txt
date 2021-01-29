@@ -1,0 +1,200 @@
+Deploy Digital Ocean
+
+//SERVER
+
+1. Rename ormconfig.json to ornconfig.js ---> to use env variables and not hard coded 
+example .env
+
+PORT=5000
+NODE_ENV=development
+APP_URL=http://localhost:5000
+ORIGIN=http://localhost:3000
+
+JWT_SECRET=ksdfn9908093aodosdkndskgc42
+
+DB_DIALECT=postgres
+DB_PORT=5432
+DB_HOST=localhost
+DB_USERNAME=dunapanta
+DB_PASSWORD=password
+DB_DATABASE=redditclone
+
+
+
+2. in tsconfig.json verify "outDir":"./build"
+	typescript is just for development
+
+3. On ornconfig.js add const rootDir = process.env.NODE_ENV === 'development' ? 'src' : 'build'
+   example:
+	
+   const rootDir = process.env.NODE_ENV === 'development' ? 'src' : 'build'
+
+   module.exports = {
+      type: process.env.DB_DIALECT,
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+      synchronize: false,
+      logging: process.env.NODE_ENV === 'development',
+      entities: [
+         rootDir + "/entities/**/*{.ts,.js}"
+      ],
+      migrations: [
+         rootDir + "/migrations/**/*{.ts,.js}"
+      ],
+      subscribers: [
+         rootDir + "/subscribers/**/*{.ts,.js}"
+      ],
+      seeds: [rootDir + '/seeds/**/*{.ts,.js}'],
+      cli: {
+         entitiesDir: rootDir + "/entities",
+         migrationsDir: rootDir + "/migrations",
+         subscribersDir: rootDir + "/subscribers"
+      }
+   }
+
+4. on tsconfig.json add 
+   "include": ["src/**/*"],
+   "exclude": ["node_modules", "client"]
+
+5. npx tsc
+
+6. NODE_ENV=production node build/server.js
+   it should succeed
+
+7. curl localhost:5000/api/posts
+   test to check if its conecting to the database fine
+
+//CLIENT
+
+1. create .env.local
+   remplace corresponding
+   example
+   NEXT_PUBLIC_SERVER_BASE_URL="http://localhost:5000"
+   NEXT_PUBLIC_CLIENT_BASE_URL="http://localhost:3000"
+   APP_DOMAIN=localhost
+
+2. npm run build
+
+// TEST SERVER AND CLIENT
+
+1. npm start
+
+2. cd client
+   npm start
+
+// DIGITAL Ocean
+
+1. Go to Droplets
+   Select the Basic plan (seleciono todo lo mas barato)
+
+2. ssh root@ipaddress
+
+3.  Comands for Ubuntu here: https://github.com/nodesource/distributions
+   curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
+   sudo apt-get install -y nodejs
+
+4. Generate ssh key follow the link https://docs.github.com/es/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   cd .ssh
+   cat id_ed25519.pub 
+   copy that
+
+5. Go to Github -> Settings -> Deploy keys ->  Add deploy key
+   add a title
+   paste the key
+
+6. click code and copy the ssh link of the project
+
+7. cd ..
+   git clone git@github.com:dunapanta/Reddit-Clone.git redditclone.com 
+   yes
+
+8. cd projectname
+
+9. npm install
+
+//SETUP DATABASE
+
+10. go to https://www.postgresql.org/download/linux/ubuntu/
+   sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+   wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+   sudo apt-get update
+   sudo apt-get -y install postgresql
+
+11. sudo -i -u postgres 
+    psql
+    ALTER USER postgres WITH PASSWORD 'yourpassword';
+    CREATE DATABASE redditclone; 
+    \q
+    exit
+
+12 cp .env.example .env
+   vim .env 
+   add the variables
+
+13. NODE_ENV=development npm run typeorm migration:run 
+
+14. npx tsc
+
+//CLIENT
+15. cd client
+
+16. npm install
+
+17. npm audit fix --force 
+   -> install next latest version
+
+19. cp .env.example .env.local
+
+20. vim .env
+   add the variables
+
+21. npm run build
+
+   cd ..
+   npm install -g pm2
+   pm2 start --name "server" npm -- start
+   cd client
+   pm2 start --name "client" npm -- start
+
+//Nginx when the user request either client or server
+
+22. Go to https://www.digitalocean.com/community/tutorials/como-instalar-nginx-en-ubuntu-18-04-es
+   sudo apt update
+   sudo apt install nginx
+
+23. sudo ufw app list
+
+24. sudo ufw allow 'Nginx HTTP'
+
+25 systemctl status nginx
+   Verify
+
+26. cd /etc/nginx/sites-available/
+
+27. vim default
+
+28. comment
+   #root /var/www/html
+
+29 Add
+    location /api {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                #try_files $uri $uri/ =404;
+                proxy_pass http://localhost:5000/api;                                                                                                                                                   }
+
+        location /images {
+                proxy_pass http://localhost:500/images;
+        }
+
+        location / {
+                proxy_pass http://localhost:3000;
+        }
+
+30 systemctl restart nginx  
+
+
