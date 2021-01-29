@@ -49,6 +49,7 @@ NEXT_PUBLIC_SERVER_BASE_URL=
 NEXT_PUBLIC_CLIENT_BASE_URL=
 APP_DOMAIN=
 ```
+* Ejecuta `npm run dev`
 
 ### Deploy en DigitalOcean
 * En el archivo deploy.txt se encuentran los pasos para realizar deploy en la plataforma
