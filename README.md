@@ -5,7 +5,7 @@
 * Visita la Aplicación Web en: http://159.203.162.22/
 
 ## Screenshot
-<img src="./reddit-clone.gif" height="90%" width="90%">
+<img src="./reddit-clone.gif" height="100%" width="100%">
 
 ## Configuración
 * Clona el repositorio
@@ -15,7 +15,8 @@
 * Ejecuta `npm install` 
 * Crea archivo .env
 * Agrega las variables de entorno con el siguiente formato
-`PORT=
+```
+PORT=
 NODE_ENV=
 APP_URL=
 ORIGIN=
@@ -27,7 +28,8 @@ DB_PORT=
 DB_HOST=
 DB_USERNAME=
 DB_PASSWORD=
-DB_DATABASE= `
+DB_DATABASE= 
+```
 * Crea la base de datos 
 `
 psql
@@ -41,9 +43,12 @@ CREATE DATABASE redditclone;
 * Ejecuta `npm install`
 * Crea archivo .env.local
 * Agrega las variables de entorno con el siguiente formato
-`NEXT_PUBLIC_SERVER_BASE_URL=
+
+```
+NEXT_PUBLIC_SERVER_BASE_URL=
 NEXT_PUBLIC_CLIENT_BASE_URL=
-APP_DOMAIN=`
+APP_DOMAIN=
+```
 
 ### Deploy en DigitalOcean
-* En el archivo deploy.txt se encuantran los pasos para realizar deploy en la plataforma
+* En el archivo deploy.txt se encuentran los pasos para realizar deploy en la plataforma
