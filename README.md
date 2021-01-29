@@ -31,10 +31,10 @@ DB_PASSWORD=
 DB_DATABASE= 
 ```
 * Crea la base de datos 
-`
+```
 psql
 CREATE DATABASE redditclone;
-`
+```
 * Ejecuta `npm run typeorm migration:run`
 * Ejecuta `npm run dev`
 
